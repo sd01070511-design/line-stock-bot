@@ -12,7 +12,9 @@ app = Flask(__name__)
 line_bot_api = LineBotApi(os.environ.get('LINE_CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.environ.get('LINE_CHANNEL_SECRET'))
 
-# 🌟 新增：氣象署 API 查詢函式
+# ==========================
+# 🌟 模組 A：氣象署 API 查詢
+# ==========================
 def get_taiwan_weather(location):
     api_key = os.environ.get('CWA_API_KEY')
     if not api_key:
@@ -45,6 +47,16 @@ def get_taiwan_weather(location):
     except Exception as e:
         return f"氣象查詢發生錯誤：{e}"
 
+# ==========================
+# 🌟 核心修復：Render 專用的健康檢查大門
+# ==========================
+@app.route("/", methods=['GET'])
+def home():
+    return "Gary's Stock & Weather Bot is alive and running!"
+
+# ==========================
+# LINE Webhook 通道
+# ==========================
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -55,7 +67,9 @@ def callback():
         abort(400)
     return 'OK'
 
-# 🌟 訊息處理中心 (Routing)
+# ==========================
+# 🌟 訊息處理中心 (雙引擎 Routing)
+# ==========================
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_msg = event.message.text.upper().strip()
