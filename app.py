@@ -52,5 +52,7 @@ def handle_message(event):
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply))
 
 if __name__ == "__main__":
+    # Render 會自動分配一個 PORT，我們必須抓取它
     port = int(os.environ.get('PORT', 5000))
+    # 設定 host='0.0.0.0' 才能讓外部（LINE）連進來
     app.run(host='0.0.0.0', port=port)
